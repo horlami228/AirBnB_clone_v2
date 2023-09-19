@@ -10,6 +10,7 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
+import models
 
 
 class HBNBCommand(cmd.Cmd):
@@ -113,18 +114,56 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the empty line method of CMD """
         pass
 
-    def do_create(self, args):
+    def do_create(self, line):
         """ Create an object of any class"""
-        if not args:
+        ignored_att = ["id", "created_at", "updated_at"]  # can't use this
+        split_line = line.split(" ")
+        if not line:
             print("** class name missing **")
             return
-        elif args not in HBNBCommand.classes:
+        elif split_line[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[args]()
+        new_instance = HBNBCommand.classes[split_line[0]]()
+        for arg in split_line[1:]:
+            var = val = None
+            try:
+                var, val = arg.split('=')
+            except ValueError:
+                pass
+            if var in ignored_att:
+                pass
+            if var is None and val is None:
+                pass
+            else:
+                """
+                    check if the value passed is string
+                """
+                if val[0] == '"' and val[-1] == '"':
+                    count = 0
+                    """ change the value to a list from 
+                    the second to the second-last index"""
+                    value_list = list(val[1:-1])
+                    """check for extra double quotes in the list """
+                    for quote in value_list:
+                        if quote == '"':
+                            value_list[count] = '/"'
+                        elif quote == '_':
+                            value_list[count] = ' '
+                        count += 1
+                    val = "".join(value_list)
+                    setattr(new_instance, var, val)
+                elif val.isdigit():
+                    val = int(val)
+                    setattr(new_instance, var, val)
+                else:
+                    try:
+                        val = float(val)
+                        setattr(new_instance, var, val)
+                    except Exception:
+                        return
         storage.save()
         print(new_instance.id)
-        storage.save()
 
     def help_create(self):
         """ Help information for the create method """

@@ -1,8 +1,6 @@
 #!/usr/bin/python3
 """This module defines a class to manage file storage for hbnb clone"""
 import json
-
-
 class FileStorage:
     """This class manages storage of hbnb models in JSON format"""
     __file_path = 'file.json'
@@ -26,6 +24,7 @@ class FileStorage:
             json.dump(temp, f)
 
     def reload(self):
+
         """Loads storage dictionary from file"""
         from models.base_model import BaseModel
         from models.user import User
@@ -41,7 +40,6 @@ class FileStorage:
                     'Review': Review
                   }
         try:
-<<<<<<< HEAD
             with open(self.__file_path, "r", encoding="utf-8") as file:
 
                 original_dic = json.load(file)  # get the json string
@@ -58,12 +56,5 @@ class FileStorage:
                 class_name = new_object[0]
 
                 self.new(eval("{}".format(class_name))(**value))
-=======
-            temp = {}
-            with open(FileStorage.__file_path, 'r') as f:
-                temp = json.load(f)
-                for key, val in temp.items():
-                        self.all()[key] = classes[val['__class__']](**val)
->>>>>>> face1b6c1b1482d091ddd24c8bbec8191f1c7d8c
         except FileNotFoundError:
             pass

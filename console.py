@@ -23,20 +23,14 @@ class HBNBCommand(cmd.Cmd):
         from the Cmd Class
     """
     prompt = "(hbnb) "
-    __classes = {
-        "BaseModel",
-        "User",
-        "State",
-        "City",
-        "Place",
-        "Amenity",
-        "Review"
-    }
 
     list_of_models = ["BaseModel", "User", "State",
                       "Review", "City", "Amenity", "Place"]
 
-    def onecmd(self, line: str):
+    def onecmd(self, line):
+        sp = (line.split(" "))
+        print(sp)
+        print(sp[0])
         """I will be updating the way the arguments are passed"""
         if "." in line and "(" in line and ")"\
                 in line and '"' in line and "," in line:
@@ -117,13 +111,15 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, line):
         """ create new class instance"""
-        check = self.validate_line(line)
+        split_pm = line.split(" ")
+        print(split_pm)
+        check = self.validate_line(split_pm[0])
         if check is False:
             return
         if line in self.list_of_models:
             model = eval(line)()
-            model.save()
-            print(model.id)
+            #model.save()
+            #print(model.id)
         else:
             print("** class doesn't exist **")
 

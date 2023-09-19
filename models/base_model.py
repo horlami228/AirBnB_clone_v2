@@ -60,7 +60,7 @@ class BaseModel:
             # public attribute for updated creation time
             self.updated_at = datetime.datetime.now()
 
-            # add the objects to the objects dictionary
+            # add the objects to the objects dictionary in file_storage
             models.storage.new(self)
 
     def __str__(self):

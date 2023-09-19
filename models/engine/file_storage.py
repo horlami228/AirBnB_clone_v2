@@ -76,8 +76,9 @@ class FileStorage:
             """
             for key, value in original_dic.items():
                 new_object = key.split(".")
-                class_name = new_object[0]
                 """ split and get the class name"""
+                class_name = new_object[0]
+
                 self.new(eval("{}".format(class_name))(**value))
         except FileNotFoundError:
             pass

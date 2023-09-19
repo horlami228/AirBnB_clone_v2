@@ -11,7 +11,9 @@ CREATE USER IF NOT EXISTS "hbnb_dev"@"localhost" IDENTIFIED BY "Hbnb_dev_pwd#meg
 -- grant the user hbnb_dev all privileges to the db hbnb_dev_db
 
 GRANT ALL PRIVILEGES ON hbnb_dev_db.* TO "hbnb_dev"@"localhost";
+FLUSH PRIVILEGES;
 
 -- grant the user hbnb_dev SELECT privilege on db performance_schema
 
 GRANT SELECT ON performance_schema.* TO "hbnb_dev"@"localhost";
+FLUSH PRIVILEGES;

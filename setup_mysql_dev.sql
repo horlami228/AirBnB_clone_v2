@@ -6,7 +6,7 @@ CREATE DATABASE IF NOT EXISTS hbnb_dev_db;
 
 -- create a new user if not exists
 
-CREATE USER IF NOT EXISTS "hbnb_dev"@"localhost" IDENTIFIED BY "Hbnb_dev_pwd#mega228";
+CREATE USER IF NOT EXISTS "hbnb_dev"@"localhost" IDENTIFIED BY "hbnb_dev_pwd";
 
 -- grant the user hbnb_dev all privileges to the db hbnb_dev_db
 

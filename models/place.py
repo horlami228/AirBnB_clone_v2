@@ -3,11 +3,18 @@
 Defines the Place class that inherits from BaseModel.
 """
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, String, ForeignKey, Integer, Float
+from sqlalchemy import Column, String, ForeignKey, Integer, Float, Table
 from sqlalchemy.orm import Relationship
 from os import getenv
 import models
 from models.review import Review
+from models.amenity import Amenity
+
+association_table = Table("place_amenity", Base.metadata,
+                          Column("place_id", String(60), ForeignKey("places.id"),
+                                 primary_key=True, nullable=False),
+                          Column("amenity_id", String(60), ForeignKey("amenities.id"),
+                                 primary_key=True, nullable=False))
 
 
 class Place(BaseModel, Base):
@@ -27,6 +34,7 @@ class Place(BaseModel, Base):
         longitude (float): The longitude of the place.
         amenity_ids (list): A list of Amenity ids.
     """
+
     __tablename__ = "places"
 
     city_id = Column(String(60), ForeignKey("cities.id"), nullable=False)
@@ -42,6 +50,10 @@ class Place(BaseModel, Base):
     reviews = Relationship("Review", backref="place",
                            cascade="all, delete-orphan")
 
+    amenities = Relationship("Amenity", secondary="place_amenity",
+                             viewonly=False, backref="places")
+    amenity_ids = []
+
     if getenv("HBNB_TYPE_STORAGE") != "db":
         @property
         def reviews(self):
@@ -56,3 +68,31 @@ class Place(BaseModel, Base):
                 if review.place_id == self.id:
                     all_reviews.append(review)
             return all_reviews
+
+        @property
+        def amenities(self):
+            """
+            This is a getter attribute
+            Returns: A list of Amenities instances that match inside the
+            amenity_id list
+            """
+            all_amenities = []
+            amenity_instance = models.storage.all(Amenity)
+            for amenity in amenity_instance.values():
+                if amenity.id in self.amenity_ids:
+                    all_amenities.append(amenity)
+            return all_amenities
+
+        @amenities.setter
+        def amenities(self, value):
+            """
+            setter method to put amenity id in the list
+            amenity_id
+            Args:
+                value: Amenity instance
+
+            Returns:
+
+            """
+            if type(value) == Amenity:
+                self.amenity_ids.append(value.id)

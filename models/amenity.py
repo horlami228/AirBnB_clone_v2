@@ -1,21 +1,14 @@
 #!/usr/bin/python3
 """Defines the Amenity class."""
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
+from sqlalchemy import Column, String, ForeignKey
 
 
-class Amenity(BaseModel):
+class Amenity(BaseModel, Base):
     """Represent an amenity.
 
     Attributes:
         name (str): The name of the amenity.
     """
-
-    def __init__(self, *args, **kwargs):
-        """
-            Initialize clss user with kwargs
-            Args:
-                *args(positional arg): strings
-                **kwargs(keyword arg): dictionary
-        """
-        super().__init__(*args, **kwargs)
-        self.name = ""
+    __tablename__ = "amenities"
+    name = Column(String(128), nullable=False)

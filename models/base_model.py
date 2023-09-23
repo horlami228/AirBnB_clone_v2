@@ -10,13 +10,11 @@ from sqlalchemy.orm import declarative_base
 # import the uuid module for the id
 from uuid import uuid4
 import datetime
-from os import getenv
+import os
 
 # import module to show the date and time for instances created
 DATE_FORMAT = "%Y-%m-%dT%H:%M:%S.%f"  # formatted date and time
 
-# Any class that inherits from this Base will make
-# SQLAlchemy to map it to a table
 Base = declarative_base()
 
 
@@ -34,17 +32,12 @@ class BaseModel:
                         nullable=False, default=datetime.datetime.utcnow())
 
     # initialize database columns
-    id = Column(String(60), nullable=False, primary_key=True)
-    created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
-    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
-
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs):
         """
         Initialize a new instance object of
         the BaseModel
 
         Args:
-            *args(positional arg): Positional argument
             **kwargs(keyword arg): key value pair arguments
         """
         self.id = str(uuid4())
@@ -72,6 +65,16 @@ class BaseModel:
                     # set the created_at or updated_at attributes
                 setattr(self, key, value)
                 # set every other passed argument
+        else:
+            # public attribute that contains uuid
+            # for every instance of the class
+            self.id = str(uuid4())
+
+            # public attribute for the datetime creation of the object
+            self.created_at = datetime.datetime.now()
+
+            # public attribute for updated creation time
+            self.updated_at = datetime.datetime.now()
 
     def __str__(self):
         """

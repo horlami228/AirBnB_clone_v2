@@ -1,13 +1,19 @@
 #!/usr/bin/python3
 """Defines the City class."""
-from models.base_model import BaseModel
+import models
+from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, ForeignKey
-from models.base_model import BaseModel
+from models import Base
 from sqlalchemy.orm import relationship
 
 
-class City(BaseModel):
-    """Represent a city."""
+class City(BaseModel, Base):
+    """Represent a city.
+
+    Attributes:
+        state_id (str): The state id.
+        name (str): The name of the city.
+    """
 
     __tablename__ = "cities"
     name = Column(String(128), nullable=False)
@@ -16,10 +22,10 @@ class City(BaseModel):
 
     def __init__(self, *args, **kwargs):
         """
-            Initialize clss user with kwargs
-            Args:
-                *args(positional arg): strings
-                **kwargs(keyword arg): dictionary
+        Initialize clss user with kwargs
+        Args:
+            *args(positional arg): strings
+            **kwargs(keyword arg): dictionary
         """
         super().__init__(*args, **kwargs)
         self.state_id = ""

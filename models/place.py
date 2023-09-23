@@ -4,7 +4,7 @@ Defines the Place class that inherits from BaseModel.
 """
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, ForeignKey, Integer, Float
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Relationship
 from os import getenv
 import models
 from models.review import Review
@@ -39,7 +39,7 @@ class Place(BaseModel, Base):
     price_by_night = Column(Integer, nullable=False, default=0)
     latitude = Column(Float, nullable=True)
     longitude = Column(Float, nullable=True)
-    reviews = relationship("Review", backref="place",
+    reviews = Relationship("Review", backref="place",
                            cascade="all, delete-orphan")
 
     if getenv("HBNB_TYPE_STORAGE") != "db":

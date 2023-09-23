@@ -39,20 +39,20 @@ class Place(BaseModel, Base):
     price_by_night = Column(Integer, nullable=False, default=0)
     latitude = Column(Float, nullable=True)
     longitude = Column(Float, nullable=True)
-    reviews = Relationship("Review", backref="place",
-                           cascade="all, delete-orphan")
-
-    if getenv("HBNB_TYPE_STORAGE") != "db":
-        @property
-        def reviews(self):
-            """
-            This is a getter attribute
-            Returns: A list of Review instances with place_id
-            equal current place.id
-            """
-            all_reviews = []
-            city_instance = models.storage.all(Review)
-            for review in city_instance.values():
-                if review.place_id == self.id:
-                    all_reviews.append(review)
-            return all_reviews
+    # reviews = Relationship("Review", backref="place",
+    #                        cascade="all, delete-orphan")
+    #
+    # if getenv("HBNB_TYPE_STORAGE") != "db":
+    #     @property
+    #     def reviews(self):
+    #         """
+    #         This is a getter attribute
+    #         Returns: A list of Review instances with place_id
+    #         equal current place.id
+    #         """
+    #         all_reviews = []
+    #         city_instance = models.storage.all(Review)
+    #         for review in city_instance.values():
+    #             if review.place_id == self.id:
+    #                 all_reviews.append(review)
+    #         return all_reviews

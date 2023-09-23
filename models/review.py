@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 """Defines the Review class."""
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
+from sqlalchemy import Column, String, ForeignKey
 
 
-class Review(BaseModel):
+class Review(BaseModel, Base):
     """Represent a review.
 
     Attributes:
@@ -11,15 +12,7 @@ class Review(BaseModel):
         user_id (str): The User id.
         text (str): The text of the review.
     """
-
-    def __init__(self, *args, **kwargs):
-        """
-            Initialize clss user with kwargs
-            Args:
-                *args(positional arg): strings
-                **kwargs(keyword arg): dictionary
-        """
-        super().__init__(*args, **kwargs)
-        self.place_id = ""
-        self.user_id = ""
-        self.text = ""
+    __table__name = "reviews"
+    text = Column(String(1024), nullable=False)
+    place_id = Column(String(60), ForeignKey("places.id"), nullable=False)
+    user_id = Column(String(60), ForeignKey("users.id"), nullable=False)

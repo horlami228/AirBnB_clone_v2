@@ -4,6 +4,10 @@ Defines the Place class that inherits from BaseModel.
 """
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, ForeignKey, Integer, Float
+from sqlalchemy.orm import relationship
+from os import getenv
+import models
+from models.review import Review
 
 
 class Place(BaseModel, Base):
@@ -35,3 +39,20 @@ class Place(BaseModel, Base):
     price_by_night = Column(Integer, nullable=False, default=0)
     latitude = Column(Float, nullable=True)
     longitude = Column(Float, nullable=True)
+    reviews = relationship("Review", backref="place",
+                           cascade="all, delete-orphan")
+
+    if getenv("HBNB_TYPE_STORAGE") != "db":
+        @property
+        def reviews(self):
+            """
+            This is a getter attribute
+            Returns: A list of Review instances with place_id
+            equal current place.id
+            """
+            all_reviews = []
+            city_instance = models.storage.all(Review)
+            for review in city_instance.values():
+                if review.place_id == self.id:
+                    all_reviews.append(review)
+            return all_reviews

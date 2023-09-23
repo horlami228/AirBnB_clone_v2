@@ -27,10 +27,11 @@ class BaseModel:
     """
         This attribute are used by SQLAlchemy
     """
-    
     id = Column(String(60), unique=True, nullable=False, primary_key=True)
-    created_at = Column(DateTime, nullable=False, default=datetime.datetime.utcnow())
-    updated_at = Column(DateTime, nullable=False, default=datetime.datetime.utcnow())
+    created_at = Column(DateTime, nullable=False,
+                        default=datetime.datetime.utcnow())
+    updated_at = Column(DateTime,
+                        nullable=False, default=datetime.datetime.utcnow())
 
     def __init__(self, *args, **kwargs):
         """

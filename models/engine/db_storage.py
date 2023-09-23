@@ -17,7 +17,7 @@ from models.amenity import Amenity
 
 class DBStorage:
     """
-    This class represents the functionality for 
+    This class represents the functionality for
     our DataBase
   """
 
@@ -35,7 +35,9 @@ class DBStorage:
         """
 
         self.__engine = create_engine("mysql+mysqldb://{}:{}@{}/{}".
-                                      format(self.user, self.password, self.host, self.database), pool_pre_ping=True)
+                                      format(self.user, self.password,
+                                             self.host, self.database),
+                                      pool_pre_ping=True)
 
         if getenv("HBNB_ENV") == "test":
             Base.metadata.drop_all(self.__engine)
@@ -98,10 +100,11 @@ class DBStorage:
 
         """
         Base.metadata.create_all(self.__engine, checkfirst=True)
-        """
-            use the session maker to create a session that we can use for 
-            operations and give it a scoped_session to make sure our session
-            is thread-safe
-        """
-        DB_Factory = scoped_session(sessionmaker(bind=self.__engine, expire_on_commit=False))
+        # """
+        #     use the session maker to create a session that we can use for
+        #     operations and give it a scoped_session to make sure our session
+        #     is thread-safe
+        # """
+        DB_Factory = scoped_session(sessionmaker(bind=self.__engine,
+                                                 expire_on_commit=False))
         self.__session = DB_Factory()

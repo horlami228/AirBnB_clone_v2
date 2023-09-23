@@ -11,6 +11,7 @@ from models.city import City
 from models.amenity import Amenity
 from models.review import Review
 import models
+from os import getenv
 
 
 class HBNBCommand(cmd.Cmd):
@@ -162,8 +163,13 @@ class HBNBCommand(cmd.Cmd):
                         setattr(new_instance, var, val)
                     except Exception:
                         return
-        storage.save()
-        print(new_instance.id)
+        if getenv("HBNB_TYPE_STORAGE") != "db":   
+            new_instance.save()
+            print(new_instance.id)
+        else:
+            storage.new(new_instance)
+            storage.save()
+            print(new_instance.id)
 
     def help_create(self):
         """ Help information for the create method """
@@ -235,24 +241,19 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the destroy command """
         print("Destroys an individual instance of a class")
         print("[Usage]: destroy <className> <objectId>\n")
-
-    def do_all(self, args):
-        """ Shows all objects, or all objects of a class"""
-        print_list = []
-
-        if args:
-            args = args.split(' ')[0]  # remove possible trailing args
-            if args not in HBNBCommand.classes:
-                print("** class doesn't exist **")
-                return
-            for k, v in storage._FileStorage__objects.items():
-                if k.split('.')[0] == args:
-                    print_list.append(str(v))
+    
+    def do_all(self, line):
+        """print all objects available"""
+        if line != "" and line in self.classes:
+            all = storage.all(line)
+            for model in all.keys():
+                print(all[model])
+        elif line == "":
+            all = storage.all(line)
+            for model in all.keys():
+                print(all[model])
         else:
-            for k, v in storage._FileStorage__objects.items():
-                print_list.append(str(v))
-
-        print(print_list)
+            print("** class doesn't exist **")
 
     def help_all(self):
         """ Help information for the all commands """

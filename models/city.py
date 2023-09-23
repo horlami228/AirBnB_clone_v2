@@ -1,23 +1,17 @@
 #!/usr/bin/python3
 """Defines the City class."""
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
+from sqlalchemy import Column, String, ForeignKey
+from sqlalchemy.orm import relationship
 
 
-class City(BaseModel):
-    """Represent a city.
-
-    Attributes:
-        state_id (str): The state id.
-        name (str): The name of the city.
+class City(BaseModel, Base):
+    """Represent a city inheriting
+    from BaseModel and Base"""
     """
+        check the type of storage specified
+    """
+    __tablename__ = "cities"  # name of the table
 
-    def __init__(self, *args, **kwargs):
-        """
-            Initialize clss user with kwargs
-            Args:
-                *args(positional arg): strings
-                **kwargs(keyword arg): dictionary
-        """
-        super().__init__(*args, **kwargs)
-        self.state_id = ""
-        self.name = ""
+    name = Column(String(128), nullable=False)
+    state_id = Column(String(60), ForeignKey("states.id"), nullable=False)

@@ -33,11 +33,6 @@ class BaseModel:
     updated_at = Column(DateTime,
                         nullable=False, default=datetime.datetime.utcnow())
 
-    # initialize database columns
-    id = Column(String(60), nullable=False, primary_key=True)
-    created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
-    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
-
     def __init__(self, *args, **kwargs):
         """
         Initialize a new instance object of
@@ -59,7 +54,6 @@ class BaseModel:
             for (key, value) in kwargs.items():
                 if key == "__class__":
                     continue
-                setattr(self, key, value)
                 if key == "created_at" or key == "updated_at":
                     # convert date string to datetime object
                     date_string = value
@@ -91,14 +85,6 @@ class BaseModel:
         # add the object to the object dictionary in file_storage
         models.storage.new(self)
         models.storage.save()  # serialize objects
-        models.storage.new(self)  # objects dictionary in file_storage
-
-    def delete(self):
-        """
-            This public method deletes the deleted_at attribute
-            with the deleted date and time
-        """
-        models.storage.delete(self)
 
     def to_dict(self):
         """

@@ -2,6 +2,7 @@
 """Defines the City class."""
 from models.base_model import BaseModel
 from sqlalchemy import Column, String, ForeignKey
+from models.base_model import BaseModel
 from sqlalchemy.orm import relationship
 
 
@@ -15,10 +16,10 @@ class City(BaseModel):
 
     def __init__(self, *args, **kwargs):
         """
-        Initialize clss user with kwargs
-        Args:
-            *args(positional arg): strings
-            **kwargs(keyword arg): dictionary
+            Initialize clss user with kwargs
+            Args:
+                *args(positional arg): strings
+                **kwargs(keyword arg): dictionary
         """
         super().__init__(*args, **kwargs)
         self.state_id = ""

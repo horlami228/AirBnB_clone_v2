@@ -56,16 +56,21 @@ class DBStorage:
         class_dict = {}
 
         if cls is None or cls == "":
-            result = self.__session.query(State, City).all()
+            result = self.__session.query(State, City, User).all()
+            for column in result:
+                for row in column:
+                    key = "{}.{}".format(row.__class__.__name__, row.id)
+                    value = row
+                    class_dict[key] = value
+                return class_dict
         else:
             if type(cls) == str:
                 cls = eval(cls)
             result = self.__session.query(cls).all()
-        for column in result:
-            for row in column:
-                key = "{}.{}".format(row.__class__.__name__, row.id)
-                value = row
-                class_dict[key] = value
+        for row in result:
+            key = "{}.{}".format(row.__class__.__name__, row.id)
+            value = row
+            class_dict[key] = value
         return class_dict
 
     def new(self, obj):

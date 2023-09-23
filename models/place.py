@@ -2,10 +2,11 @@
 """
 Defines the Place class that inherits from BaseModel.
 """
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
+from sqlalchemy import Column, String, ForeignKey, Integer, Float
 
 
-class Place(BaseModel):
+class Place(BaseModel, Base):
     """
     Represents a place.
 
@@ -22,25 +23,15 @@ class Place(BaseModel):
         longitude (float): The longitude of the place.
         amenity_ids (list): A list of Amenity ids.
     """
+    __tablename__ = "places"
 
-    def __init__(self, *args, **kwargs):
-        """
-        Initializes a new instance object of the Place class.
-
-        Args:
-            *args (positional arg): Positional argument.
-            **kwargs (keyword arg): Key value pair arguments.
-        """
-
-        super().__init__(*args, **kwargs)
-        self.city_id = ""
-        self.user_id = ""
-        self.name = ""
-        self.description = ""
-        self.number_rooms = 0
-        self.number_bathrooms = 0
-        self.max_guest = 0
-        self.price_by_night = 0
-        self.latitude = 0.0
-        self.longitude = 0.0
-        self.amenity_ids = []
+    city_id = Column(String(60), ForeignKey("cities.id"), nullable=False)
+    user_id = Column(String(60), ForeignKey("users.id"), nullable=False)
+    name = Column(String(128), nullable=False)
+    description = Column(String(1024), nullable=True)
+    number_rooms = Column(Integer, nullable=False, default=0)
+    number_bathrooms = Column(Integer, nullable=False, default=0)
+    max_guest = Column(Integer, nullable=False, default=0)
+    price_by_night = Column(Integer, nullable=False, default=0)
+    latitude = Column(Float, nullable=True)
+    longitude = Column(Float, nullable=True)

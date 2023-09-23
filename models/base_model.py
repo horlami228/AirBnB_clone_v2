@@ -10,7 +10,6 @@ from sqlalchemy.orm import declarative_base
 # import the uuid module for the id
 from uuid import uuid4
 import datetime
-from os import getenv
 
 # import module to show the date and time for instances created
 DATE_FORMAT = "%Y-%m-%dT%H:%M:%S.%f"  # formatted date and time

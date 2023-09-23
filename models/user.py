@@ -2,6 +2,7 @@
 """Defines the User class."""
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String
+from sqlalchemy.orm import Relationship
 
 
 class User(BaseModel, Base):
@@ -19,13 +20,5 @@ class User(BaseModel, Base):
     password = Column(String(128), nullable=False)
     first_name = Column(String(128), nullable=True)
     last_name = Column(String(128), nullable=True)
+    places = Relationship("Place", backref="user", cascade="all, delete-orphan")
 
-    def __init__(self, *args, **kwargs):
-        """
-        Initialize class User with kwargs.
-
-        Args:
-            *args (tuple): Positional arguments.
-            **kwargs (dict): Keyword arguments.
-        """
-        super().__init__(*args, **kwargs)

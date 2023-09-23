@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 """Defines the User class."""
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
+from sqlalchemy import Column, String
 
 
-class User(BaseModel):
+class User(BaseModel, Base):
     """Represent a User.
 
     Attributes:
@@ -12,16 +13,19 @@ class User(BaseModel):
         first_name (str): The first name of the user.
         last_name (str): The last name of the user.
     """
+    __tablename__ = "users"
+
+    email = Column(String(128), nullable=False)
+    password = Column(String(128), nullable=False)
+    first_name = Column(String(128), nullable=True)
+    last_name = Column(String(128), nullable=True)
 
     def __init__(self, *args, **kwargs):
         """
-            Initialize clss user with kwargs
-            Args:
-                *args(positional arg): strings
-                **kwargs(keyword arg): dictionary
+        Initialize class User with kwargs.
+
+        Args:
+            *args (tuple): Positional arguments.
+            **kwargs (dict): Keyword arguments.
         """
         super().__init__(*args, **kwargs)
-        self.email = ""
-        self.password = ""
-        self.first_name = ""
-        self.last_name = ""

@@ -5,13 +5,18 @@
 """
 
 import models
-from uuid import uuid4
+from sqlalchemy import Column, String, DateTime
+from sqlalchemy.orm import declarative_base
 # import the uuid module for the id
+from uuid import uuid4
 import datetime
+from os import getenv
 
 # import module to show the date and time for instances created
 DATE_FORMAT = "%Y-%m-%dT%H:%M:%S.%f"  # formatted date and time
 
+# Any class that inherits from this Base will make
+# SQLAlchemy to map it to a table
 Base = declarative_base()
 
 
@@ -19,6 +24,14 @@ class BaseModel:
     """
         Defining a class BaseModel
     """
+    """
+        This attribute are used by SQLAlchemy
+    """
+    id = Column(String(60), unique=True, nullable=False, primary_key=True)
+    created_at = Column(DateTime, nullable=False,
+                        default=datetime.datetime.utcnow())
+    updated_at = Column(DateTime,
+                        nullable=False, default=datetime.datetime.utcnow())
 
     # initialize database columns
     id = Column(String(60), nullable=False, primary_key=True)
@@ -34,7 +47,9 @@ class BaseModel:
             *args(positional arg): Positional argument
             **kwargs(keyword arg): key value pair arguments
         """
-
+        self.id = str(uuid4())
+        self.created_at = datetime.datetime.utcnow()
+        self.updated_at = datetime.datetime.utcnow()
         """
             looping through the keyword argument
             for the purpose of initializing a new instance with
@@ -57,23 +72,13 @@ class BaseModel:
                     # set the created_at or updated_at attributes
                 setattr(self, key, value)
                 # set every other passed argument
-        else:
-            # public attribute that contains uuid
-            # for every instance of the class
-            self.id = str(uuid4())
-
-            # public attribute for the datetime creation of the object
-            self.created_at = datetime.datetime.now()
-
-            # public attribute for updated creation time
-            self.updated_at = datetime.datetime.now()
 
     def __str__(self):
         """
         This magic method returns a string representation
         of the BaseModel class
         """
-
+        del self.__dict__["_sa_instance_state"]
         return "[{}] ({}) {}".format(self.__class__.__name__,
                                      self.id, self.__dict__)
 
@@ -83,6 +88,8 @@ class BaseModel:
             with the updated date and time
         """
         self.updated_at = datetime.datetime.now()
+        # add the object to the object dictionary in file_storage
+        models.storage.new(self)
         models.storage.save()  # serialize objects
         models.storage.new(self)  # objects dictionary in file_storage
 
@@ -100,11 +107,19 @@ class BaseModel:
         """
 
         dic = {}
-
         for (key, value) in self.__dict__.items():
             if key == "created_at" or key == "updated_at":
                 dic[key] = value.isoformat(sep='T')
+            elif key == "_sa_instance_state":   # ignore
+                pass
             else:
                 dic[key] = value
         dic["__class__"] = self.__class__.__name__
+
         return dic
+
+    def delete(self):
+        """
+        This method deletes the current instance from the storage
+        """
+        models.storage.delete(self)

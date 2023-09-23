@@ -93,7 +93,9 @@ class DBStorage:
         Args:
             obj: objectC
         """
-        if not obj:
+        if obj is None:
+            pass
+        else:
             self.__session.delete(obj)
             self.save()
 

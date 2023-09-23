@@ -1,40 +1,110 @@
+#!/usr/bin/python3
+
+"""
+  Database Storage Engine
+"""
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
-from models.base_model import BaseModel, Base
+from os import getenv
+from models.base_model import Base
+from models.user import User
+from models.state import State
+from models.city import City
+from models.place import Place
+from models.review import Review
+from models.amenity import Amenity
 
 
 class DBStorage:
-    __engine = None
-    __session = None
+    """
+    This class represents the functionality for
+    our DataBase
+  """
+
+    __engine = None  # serves as the engine for connection to mysql server
+    __session = None  # session that we use in performing database operations
 
     def __init__(self):
-        # Create the engine linked to the MySQL database using environment variables
-        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'
-                                      .format(os.getenv('HBNB_MYSQL_USER'),
-                                              os.getenv('HBNB_MYSQL_PWD'),
-                                              os.getenv('HBNB_MYSQL_HOST'),
-                                              os.getenv('HBNB_MYSQL_DB')),
+        self.user = getenv("HBNB_MYSQL_USER")
+        self.password = getenv("HBNB_MYSQL_PWD")
+        self.host = getenv("HBNB_MYSQL_HOST")
+        self.database = getenv("HBNB_MYSQL_DB")
+
+        """
+        create a engine that connects to a MySQL database
+        """
+
+        self.__engine = create_engine("mysql+mysqldb://{}:{}@{}/{}".
+                                      format(self.user, self.password,
+                                             self.host, self.database),
                                       pool_pre_ping=True)
-        if os.getenv('HBNB_ENV') == 'test':
+
+        if getenv("HBNB_ENV") == "test":
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        # Query all objects depending on the class name (cls)
-        # from the current database session (self.__session)
-        pass
+        """
+        This method returns a dictionary of objects with the passed
+        class as argument or if no argument returns every class
+        Args:
+            cls: Class name
+
+        Returns: A dictionary
+
+        """
+
+        class_dict = {}
+
+        if cls is None or cls == "":
+            result = self.__session.query(State, City).all()
+        else:
+            if type(cls) == str:
+                cls = eval(cls)
+            result = self.__session.query(cls).all()
+        for column in result:
+            for row in column:
+                key = "{}.{}".format(row.__class__.__name__, row.id)
+                value = row
+                class_dict[key] = value
+        return class_dict
 
     def new(self, obj):
-        # Add the object to the current database session (self.__session)
-        pass
+        """
+        Add the object to the DataBase record
+        Args:
+            obj: instances
+        """
+
+        self.__session.add(obj)
 
     def save(self):
-        # Commit all changes of the current database session (self.__session)
-        pass
+        """
+        commit the changes to the DataBase to reflect the updated
+        change
+        """
+        self.__session.commit()
 
     def delete(self, obj=None):
-        # Delete an object from the current database session (self.__session) if it's not None
-        pass
+        """
+        Delete an instance record in the DB
+        Args:
+            obj: object
+        """
+        if not obj:
+            self.__session.delete(obj)
+            self.save()
 
     def reload(self):
-        # Create all tables in the database and create the current database session (self.__session)
-        pass
+        """
+        create all tables in the database
+
+        """
+        Base.metadata.create_all(self.__engine, checkfirst=True)
+        # """
+        #     use the session maker to create a session that we can use for
+        #     operations and give it a scoped_session to make sure our session
+        #     is thread-safe
+        # """
+        DB_Factory = scoped_session(sessionmaker(bind=self.__engine,
+                                                 expire_on_commit=False))
+        self.__session = DB_Factory()

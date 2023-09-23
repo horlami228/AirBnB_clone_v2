@@ -12,11 +12,18 @@ import datetime
 # import module to show the date and time for instances created
 DATE_FORMAT = "%Y-%m-%dT%H:%M:%S.%f"  # formatted date and time
 
+Base = declarative_base()
+
 
 class BaseModel:
     """
         Defining a class BaseModel
     """
+
+    # initialize database columns
+    id = Column(String(60), nullable=False, primary_key=True)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
+    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
 
     def __init__(self, *args, **kwargs):
         """
@@ -37,6 +44,7 @@ class BaseModel:
             for (key, value) in kwargs.items():
                 if key == "__class__":
                     continue
+                setattr(self, key, value)
                 if key == "created_at" or key == "updated_at":
                     # convert date string to datetime object
                     date_string = value
@@ -60,9 +68,6 @@ class BaseModel:
             # public attribute for updated creation time
             self.updated_at = datetime.datetime.now()
 
-            # add the objects to the objects dictionary in file_storage
-            models.storage.new(self)
-
     def __str__(self):
         """
         This magic method returns a string representation
@@ -79,6 +84,14 @@ class BaseModel:
         """
         self.updated_at = datetime.datetime.now()
         models.storage.save()  # serialize objects
+        models.storage.new(self)  # objects dictionary in file_storage
+
+    def delete(self):
+        """
+            This public method deletes the deleted_at attribute
+            with the deleted date and time
+        """
+        models.storage.delete(self)
 
     def to_dict(self):
         """

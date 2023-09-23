@@ -34,15 +34,12 @@ class DBStorage:
         create a engine that connects to a MySQL database
         """
 
-        def __init__(self):
-            # Create the engine linked to the MySQL database using environment variables
-            self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'
-                                          .format(os.getenv('HBNB_MYSQL_USER'),
-                                                  os.getenv('HBNB_MYSQL_PWD'),
-                                                  os.getenv('HBNB_MYSQL_HOST'),
-                                                  os.getenv('HBNB_MYSQL_DB')),
-                                          pool_pre_ping=True)
-        if os.getenv('HBNB_ENV') == 'test':
+        self.__engine = create_engine("mysql+mysqldb://{}:{}@{}/{}".
+                                      format(self.user, self.password,
+                                             self.host, self.database),
+                                      pool_pre_ping=True)
+
+        if getenv("HBNB_ENV") == "test":
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):

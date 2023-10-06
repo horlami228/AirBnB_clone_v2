@@ -46,4 +46,3 @@ sudo sed -i '/listen 80 default_server;/r temp_config'  /etc/nginx/sites-availab
 sudo rm temp_config
 # restart nginx
 sudo service nginx restart
-

@@ -8,13 +8,9 @@ sudo apt-get install nginx -y
 # create the folder data
 sudo mkdir -p /data/
 
-# give ownership of data folder to user and make it recursive
-sudo chown -R "$USER":"$USER" /data/
-
 # create the sub directories needed
 sudo mkdir -p /data/web_static/releases/test
 sudo mkdir -p /data/web_static/shared/
-sudo mkdir -p /data/web_static/current/
 # add an index.html file to the test it
 content=" 
 <html> 
@@ -29,15 +25,17 @@ content="
 </html>
 "
 
-echo "$content" | sudo tee /data/web_static/releases/test/index.html
+sudo echo "$content" | sudo tee /data/web_static/releases/test/index.html
 
 # create a symbolic link for the index.html and force a new file if it already exist
-ln -sf /data/web_static/releases/test/ /data/web_static/current/
+sudo ln -s -f /data/web_static/releases/test/ /data/web_static/current
 
+# give ownership of data folder to user and make it recursive
+sudo chown -R ubuntu:ubuntu /data/
 
 # configure nginx with a new location for index.html with /hbnb_static/ as the endpoint
 
-echo '	location = /hbnb_static {' > temp_config
+echo '	location /hbnb_static {' > temp_config
 echo '    	alias /data/web_static/current/;' >> temp_config
 echo '	}' >> temp_config
 

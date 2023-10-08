@@ -33,10 +33,9 @@ def do_deploy(archive_path):
             " -C /data/web_static/releases/{}/".format(filename, filename))
 
         # move all files from the directory out of the folder
-        source_path = "/data/web_static/releases"
-        "/{}/web_static".format(filename)
-        destination_path = "/data/web_static/"
-        "releases/{}/".format(filename)
+        source_path = "/data/web_static/releases/{}/\
+            web_static".format(filename)
+        destination_path = "/data/web_static/releases/{}".format(filename)
 
         run("sudo rsync -a {}/* {}".format(source_path, destination_path))
 

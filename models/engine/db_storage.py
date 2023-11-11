@@ -118,4 +118,6 @@ class DBStorage:
         self.__session = DB_Factory()
 
     def close(self):
-        self.__session.close()
+        """close current session
+        """
+        self.__session.remove()

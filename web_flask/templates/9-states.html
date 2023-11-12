@@ -9,7 +9,7 @@
     {% if states %}
     <UL> {% for state in states|sort(attribute='name') %}
         <LI>
-            State: {{ state.id }}: <B> {{ state.name }}</B>
+            {{ state.id }}: <B> {{ state.name }}</B>
         </LI>
         {% endfor %}
     </UL>

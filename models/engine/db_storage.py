@@ -56,7 +56,8 @@ class DBStorage:
         class_dict = {}
 
         if cls is None or cls == "":
-            result = self.__session.query(State, City, User).all()
+            result = self.__session.query(State, City, User,
+                                          Place, Amenity, Review).all()
             for column in result:
                 for row in column:
                     key = "{}.{}".format(row.__class__.__name__, row.id)
@@ -115,3 +116,8 @@ class DBStorage:
         DB_Factory = scoped_session(sessionmaker(bind=self.__engine,
                                                  expire_on_commit=False))
         self.__session = DB_Factory()
+
+    def close(self):
+        """close current session
+        """
+        self.__session.close_all()
